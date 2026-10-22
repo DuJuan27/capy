@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f2e8" />
+  <meta name="description" content="两个人各自陈述，让卡皮巴拉法官听完双方说法，再给出尽量中立的分析与建议。" />
+  <title>卡皮巴拉法庭 — 有事慢慢说，水豚来听证</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/socket.io/socket.io.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="卡皮巴拉法庭首页">
+        <span class="brand-mark" aria-hidden="true"><span>豚</span></span>
+        <span class="brand-copy"><strong>卡皮巴拉法庭</strong><small>CAPYBARA COURT · EST. TODAY</small></span>
+      </a>
+      <div class="header-note"><span class="tiny-dot"></span> 不站队，只讲理</div>
+    </header>
+
+    <main>
+      <section id="landing" class="landing-grid">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-icon">✳</span> 今日开庭，情绪暂存</div>
+          <h1>先别急着吵。<br /><em>水豚</em>听听再说。</h1>
+          <p class="hero-intro">你说你的理，他说他的理。两个人各自陈述完毕，让水豚法官看看：哪里有道理，哪里有误会，接下来又该怎么办。</p>
+          <div class="hero-points">
+            <div><span class="point-icon">01</span><span><b>各自陈述</b><small>提交前看不到对方原文</small></span></div>
+            <div><span class="point-icon">02</span><span><b>同时开庭</b><small>双方提交后才公开审理</small></span></div>
+            <div><span class="point-icon">03</span><span><b>给出判词</b><small>分析责任，也给解决办法</small></span></div>
+          </div>
+        </div>
+
+        <section class="join-card" aria-labelledby="joinTitle">
+          <div class="card-topline"><span class="court-stamp">CC / 01</span><span class="status-pill"><span class="tiny-dot"></span> 法庭开放中</span></div>
+          <div class="capybara-illustration" aria-hidden="true">
+            <svg viewBox="0 0 230 164" role="img" aria-label="卡皮巴拉法官插画">
+              <ellipse cx="115" cy="146" rx="78" ry="10" fill="#d9d0b9" opacity=".55"/>
+              <path d="M58 74 C51 42 71 22 91 30 C104 10 129 13 140 31 C163 23 183 44 174 75 L174 103 C170 128 151 142 118 142 C81 142 60 124 58 99 Z" fill="#b8794e"/>
+              <ellipse cx="78" cy="45" rx="17" ry="20" fill="#9f603b"/><ellipse cx="151" cy="43" rx="17" ry="20" fill="#9f603b"/>
+              <ellipse cx="78" cy="47" rx="9" ry="11" fill="#d7a078"/><ellipse cx="151" cy="45" rx="9" ry="11" fill="#d7a078"/>
+              <path d="M76 83 C80 61 94 54 117 56 C143 56 157 67 160 87 C163 111 145 127 117 127 C91 127 72 110 76 83Z" fill="#d59b6d"/>
+              <ellipse cx="97" cy="75" rx="4" ry="5" fill="#2f271f"/><ellipse cx="139" cy="75" rx="4" ry="5" fill="#2f271f"/>
+              <ellipse cx="118" cy="92" rx="17" ry="12" fill="#5e3f30"/><ellipse cx="118" cy="89" rx="11" ry="6" fill="#3e2a20"/>
+              <path d="M107 104 Q118 111 130 103" stroke="#633f2c" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <path d="M70 119 Q52 133 59 145 L90 145 Q101 133 92 119Z" fill="#a86a44"/><path d="M141 119 Q132 134 145 145 L173 145 Q180 132 161 119Z" fill="#a86a44"/>
+              <path d="M87 32 L87 20 Q101 13 115 19 L115 28 L143 28 L143 39 L86 39Z" fill="#35483a"/>
+              <path d="M94 20 L135 20 L135 26 L94 26Z" fill="#d8b96a"/>
+              <path d="M85 31 L147 31 L147 38 L85 38Z" fill="#d8b96a"/>
+              <circle cx="183" cy="42" r="21" fill="#f0dba0"/><path d="M181 28 L181 43 L191 49" stroke="#5b553b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <path d="M176 16 L176 8 M194 19 L200 13 M201 37 L210 37" stroke="#b88a39" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div class="illustration-caption"><span>主审法官</span><b>Judge Cappy</b></div>
+          </div>
+          <h2 id="joinTitle">开一个小小法庭</h2>
+          <p class="card-subtitle">两个人输入相同房间码，一人选 A，一人选 B。</p>
+          <form id="joinForm" novalidate>
+            <label class="field-label" for="roomCode">房间码 <span>4–10 位字母或数字</span></label>
+            <div class="room-code-row">
+              <input id="roomCode" name="roomCode" type="text" maxlength="10" minlength="4" placeholder="例如 CAPPY8" autocomplete="off" autocapitalize="characters" required />
+              <button id="generateCode" class="button-quiet" type="button">随机生成 ↗</button>
+            </div>
+            <label class="field-label" for="nickname">怎么称呼你 <span>选填</span></label>
+            <input id="nickname" name="nickname" type="text" maxlength="24" placeholder="比如：小吴" autocomplete="nickname" />
+            <div class="field-label side-label">选择你的席位 <span>一个房间各一位</span></div>
+            <div class="side-options" role="group" aria-label="选择席位">
+              <button type="button" class="side-option active side-a" data-side="A" aria-pressed="true"><span class="side-letter">A</span><span><b>原告席</b><small>先讲讲你的版本</small></span><span class="side-check">✓</span></button>
+              <button type="button" class="side-option side-b" data-side="B" aria-pressed="false"><span class="side-letter">B</span><span><b>被告席</b><small>也有自己的说法</small></span><span class="side-check">✓</span></button>
+            </div>
+            <button id="joinButton" class="button-primary" type="submit"><span>进入法庭</span><span class="button-arrow">→</span></button>
+            <p id="joinError" class="form-error" role="alert" hidden></p>
+          </form>
+          <div class="privacy-note"><span class="lock-icon">⌑</span><span>双方都提交后才会互相看到陈述。内容会发送给 AI 服务进行分析，请不要填写真实姓名、账号、住址等敏感信息。</span></div>
+        </section>
+      </section>
+
+      <section id="courtView" class="court-view" hidden>
+        <div class="court-toolbar">
+          <div class="court-heading"><div class="eyebrow"><span class="eyebrow-icon">✳</span> 正在审理</div><h1>本庭听证中<span class="period">.</span></h1><p>把事情讲清楚，比把对方说服更重要。</p></div>
+          <div class="room-chip-wrap"><span class="room-chip-label">房间码</span><button id="copyCode" class="room-chip" type="button"><span id="roomCodeDisplay">CAPPY8</span><span>复制 ↗</span></button><button id="backHome" class="back-link" type="button">退出法庭</button></div>
+        </div>
+
+        <div class="hearing-status" aria-live="polite">
+          <div class="status-person"><span id="statusDotA" class="person-dot person-a"></span><div><b id="statusNameA">A 方</b><small id="statusTextA">等待加入</small></div><span id="statusMarkA" class="status-mark">…</span></div>
+          <div class="status-middle"><span class="status-line"></span><span class="status-scales">⚖</span><span class="status-line"></span></div>
+          <div class="status-person is-right"><span id="statusDotB" class="person-dot person-b"></span><div><b id="statusNameB">B 方</b><small id="statusTextB">等待加入</small></div><span id="statusMarkB" class="status-mark">…</span></div>
+        </div>
+
+        <div id="aiSetupNotice" class="notice notice-warn" hidden><b>还差最后一步：</b>这个服务端没有配置 AI API Key。按项目说明配置 `.env` 并重启后，才能生成真实 AI 判词。</div>
+
+        <section id="writingPanel" class="writing-panel">
+          <div class="panel-heading"><span class="step-number">01</span><div><h2>轮到你陈述了</h2><p>按你记得的顺序说清楚发生了什么。不用写得漂亮，诚实就好。</p></div></div>
+          <form id="statementForm" novalidate>
+            <label for="story" class="field-label">事情经过 <span>必填 · 最多 2000 字</span></label>
+            <textarea id="story" maxlength="2000" rows="7" placeholder="事情是怎么开始的？对方做了什么、你做了什么？尽量写具体发生的事，也可以说说当时的感受……" required></textarea>
+            <div class="textarea-footer"><span>小提示：区分“对方做了什么”和“我觉得对方是什么意思”。</span><span id="storyCount">0 / 2000</span></div>
+            <label for="concern" class="field-label concern-label">你最在意的是什么？ <span>选填 · 最多 300 字</span></label>
+            <textarea id="concern" maxlength="300" rows="2" placeholder="例如：我不是非要争输赢，我希望对方能提前告诉我。"></textarea>
+            <div class="submit-row"><p>提交后先保密，等另一方也提交，法官才会开庭。</p><button id="submitButton" type="submit" class="button-primary"><span>提交陈述</span><span class="button-arrow">→</span></button></div>
+            <p id="statementError" class="form-error" role="alert" hidden></p>
+          </form>
+        </section>
+
+        <section id="submittedPanel" class="waiting-panel" hidden aria-live="polite">
+          <div class="waiting-orbit"><span>✓</span></div><span class="eyebrow">陈述已封存</span><h2>你这边说完了。</h2><p id="waitingCopy">正在等另一位当事人提交。对方提交前，看不到你的陈述。</p><div class="waiting-note"><span>☕</span> 休庭片刻，给水豚一点时间。</div>
+        </section>
+
+        <section id="judgingPanel" class="waiting-panel judging-panel" hidden aria-live="polite">
+          <div class="judge-animation" aria-hidden="true"><span>⚖</span></div><span class="eyebrow">双方陈述完毕</span><h2>水豚法官正在阅卷…</h2><p>整理事实、辨认误会、核对双方的合理之处。</p><div class="judging-progress"><span></span></div><small>通常只需片刻。请不要关闭这个页面。</small>
+        </section>
+
+        <section id="judgeErrorPanel" class="notice notice-error" hidden aria-live="polite"><div><b>法官暂时掉线了。</b><p id="judgeErrorText">请稍后重试。</p></div><button id="retryJudge" class="button-secondary" type="button">重新开庭 ↻</button></section>
+
+        <section id="resultPanel" class="result-panel" hidden aria-live="polite">
+          <div class="verdict-topline"><div><span class="eyebrow"><span class="eyebrow-icon">✳</span> 判决书 · FINAL VERDICT</span><h2>水豚法官的判词</h2></div><div class="verdict-seal"><span>CAPYBARA</span><b>已审</b><span>COURT</span></div></div>
+          <div class="verdict-banner" id="verdictBanner"><div class="verdict-symbol" id="verdictSymbol">⚖</div><div><span class="verdict-label" id="verdictLabel">双方都有道理</span><h3 id="verdictTitle">这件事，得把话说开</h3><p id="verdictSummary"></p></div></div>
+          <div class="result-two-col">
+            <article class="result-card"><div class="result-card-label"><span>✦</span> 共同点</div><p id="commonGround"></p></article>
+            <article class="result-card"><div class="result-card-label"><span>⌕</span> 事实与推测</div><ul id="evidenceNotes" class="result-list"></ul></article>
+          </div>
+          <div class="side-analysis-grid">
+            <article class="side-analysis side-analysis-a"><div class="analysis-title"><span class="analysis-letter">A</span><h3 id="analysisTitleA">A 方值得被看见的部分</h3></div><ul id="strengthsA" class="result-list"></ul></article>
+            <article class="side-analysis side-analysis-b"><div class="analysis-title"><span class="analysis-letter">B</span><h3 id="analysisTitleB">B 方值得被看见的部分</h3></div><ul id="strengthsB" class="result-list"></ul></article>
+          </div>
+          <article class="responsibility-card"><div class="result-card-label"><span>⚖</span> 责任怎么分</div><p id="responsibilities"></p></article>
+          <article class="action-card"><div class="action-card-head"><span class="step-number">02</span><div><h3>接下来怎么做</h3><p>比起争出输赢，更重要的是让这件事往前走。</p></div></div><ol id="actionPlan" class="action-list"></ol></article>
+          <div class="followup-card"><span class="followup-icon">?</span><div><b>如果还要追问一个问题</b><p id="followUpQuestion"></p></div></div>
+          <div class="closing-line" id="closingLine"></div>
+          <div class="disclaimer">本判词由 AI 根据双方提供的文字生成，只是辅助梳理视角，不代表客观事实或专业法律意见。若有关键事实未提供，结论可能改变。</div>
+          <div class="case-statements"><h3>双方提交的原文</h3><div class="statement-reveal-grid"><article><div class="statement-reveal-heading"><span class="analysis-letter">A</span><b id="revealNameA">A 方</b></div><p id="revealStoryA"></p><small id="revealConcernA"></small></article><article><div class="statement-reveal-heading"><span class="analysis-letter">B</span><b id="revealNameB">B 方</b></div><p id="revealStoryB"></p><small id="revealConcernB"></small></article></div></div>
+          <div class="result-actions"><button id="newCaseButton" class="button-primary" type="button"><span>开启新的庭审</span><span class="button-arrow">→</span></button><button id="printButton" class="button-secondary" type="button">保存 / 打印判词 ↗</button></div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer"><span>一个认真听人说话的水豚法庭</span><span>KEEP CALM · BE FAIR · STAY CAPY</span></footer>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
