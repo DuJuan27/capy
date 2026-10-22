@@ -17,7 +17,7 @@ if errorlevel 1 (
 if not exist ".env" (
   copy ".env.example" ".env" >nul
   echo 已生成 .env 配置文件。
-  echo 接下来会打开它，请填入你的 OPENAI_API_KEY，保存并关闭记事本。
+  echo 接下来会打开它，请填入你的 DEEPSEEK_API_KEY，保存并关闭记事本。
   notepad ".env"
   pause
 )

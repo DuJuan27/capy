@@ -2,6 +2,8 @@
 
 一个中文双人实时 AI 调解网页。双方使用同一个房间码进入，分别写下自己的陈述；双方都提交后，系统才公开双方陈述并请求 AI 生成判词。
 
+> **DeepSeek 版本：** 这份项目默认接入 DeepSeek，不再请求 OpenAI。Render 环境变量请使用 `DEEPSEEK_API_KEY` 和 `DEEPSEEK_MODEL=deepseek-flash`。修改 GitHub 文件后，Render 会自动重新部署；不要把真实密钥放进仓库。
+
 > **推荐部署方式：GitHub + Render。** GitHub 用来保存代码，Render 负责运行 Node.js 后端、实时房间和 AI 请求。单独使用 GitHub Pages 不够，因为 GitHub Pages 不能运行这个项目需要的 Node.js / Socket.IO 服务端。
 
 ## 功能
@@ -27,10 +29,10 @@
 1. 打开 <https://render.com/> 并登录。
 2. 选择 **New → Blueprint**，连接 GitHub 并选中刚创建的仓库。
 3. Render 会读取仓库根目录的 `render.yaml`，按提示创建服务。
-4. 在环境变量设置中填入 `OPENAI_API_KEY`，值为你自己的 OpenAI API Key。不要把真实密钥写进 `render.yaml` 或上传到 GitHub。
+4. 在环境变量设置中填入 `DEEPSEEK_API_KEY`，值为你自己的 DeepSeek API Key。不要把真实密钥写进 `render.yaml` 或上传到 GitHub。
 5. 确认创建并等待部署完成。Render 会给你一个 `https://你的服务名.onrender.com` 地址，打开它即可使用。
 
-如果 Render 没有在 Blueprint 流程中提示填写密钥：进入该服务的 **Environment** 页面，新增 `OPENAI_API_KEY`，保存并触发重新部署。`OPENAI_MODEL` 默认是 `gpt-4.1-mini`，如果你的 API 账户不能调用这个模型，可改成账户有权限使用的文本模型。
+如果你已经有旧版 Render 服务：先把本版本文件提交到同一个 GitHub 仓库；部署后进入服务的 **Environment** 页面，新增 `DEEPSEEK_API_KEY`（DeepSeek 控制台生成的真实密钥）和 `DEEPSEEK_MODEL=deepseek-flash`，然后保存并重新部署。旧的 `OPENAI_API_KEY` 不再使用，可以删除。不要把真实密钥提交到 GitHub。
 
 官方部署文档：<https://render.com/docs/web-services>  
 官方环境变量说明：<https://render.com/docs/configure-environment-variables>
@@ -53,7 +55,7 @@
 
 1. 解压项目，在项目根目录打开终端 / PowerShell。
 2. 复制 `.env.example` 并重命名为 `.env`。
-3. 打开 `.env`，填写 `OPENAI_API_KEY`。默认模型是 `gpt-4.1-mini`。
+3. 打开 `.env`，填写 `DEEPSEEK_API_KEY`。默认模型是 `deepseek-flash`。
 4. 执行：
 
    ```bash
@@ -67,7 +69,7 @@ Windows 也可以双击 `启动法庭.bat`，然后按照提示配置 API Key。
 
 ## AI API 说明
 
-本项目通过服务端调用 OpenAI Responses API。你需要有可用的 API Key 和 API 使用额度；**ChatGPT 网页版 / App 的订阅不等同于 API 额度**，调用费用以 API 账户的实时定价为准。模型、价格与可用性可能变化，应以你的 API 控制台为准。
+本项目通过服务端调用 DeepSeek Chat Completions API，使用 `https://api.deepseek.com/chat/completions` 与 `deepseek-flash` 模型。请先在 [DeepSeek 开放平台](https://platform.deepseek.com/) 创建 API Key，并在 Render 的 Environment 中配置 `DEEPSEEK_API_KEY`。API 是否可调用取决于 DeepSeek 账户的额度/计费状态，费用以 [官方模型与价格页面](https://api-docs.deepseek.com/quick_start/pricing/) 为准。
 
 项目不会把 API Key 发送给浏览器。请只在本地 `.env` 或部署平台的服务端环境变量中配置密钥，切勿把密钥提交到公共仓库。如果密钥曾经误提交，请立即在 API 平台撤销并重新生成。
 
